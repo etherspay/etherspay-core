@@ -4,6 +4,7 @@
 import { ethers } from "hardhat";
 import { expect } from "chai";
 
+// Create a mock ERC20 token contract
 describe("ERC20 Token contract", function () {
   it("Deployment should assign the total supply of tokens to the owner", async function () {
     const [owner] = await ethers.getSigners();

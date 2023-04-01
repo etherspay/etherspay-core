@@ -72,7 +72,7 @@ contract ERC948 {
 
         //  Check that contact has approval for at least the initial and first recurring payment
         require(
-            (token.allowance(msg.sender, this) >= amountRequired),
+            (token.allowance(msg.sender, address(this)) >= amountRequired),
             "Insufficient approval for initial + 1x recurring amount"
         );
 
@@ -93,7 +93,9 @@ contract ERC948 {
         });
 
         // Save subscription
-        bytes32 subscriptionId = keccak256(msg.sender, block.timestamp);
+        bytes32 subscriptionId = keccak256(
+            abi.encode(msg.sender, block.timestamp)
+        );
         subscriptions[subscriptionId] = newSubscription;
         // TODO check for existing subscriptionId
 

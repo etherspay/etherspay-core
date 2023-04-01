@@ -51,8 +51,51 @@ describe("ERC948 contract", async function () {
     await erc20.approve(erc948.address, 100);
 
     // We must use a start time that is now or in the future
-    let current_timestamp = Math.round(new Date().getTime() / 1000);
+    const current_timestamp = Math.round(new Date().getTime() / 1000);
 
+    const tx = await erc948.createSubscription(
+      secondAccount, //address _payeeAddress,
+      erc20.address, //address _tokenAddress,
+      1, //uint _amountRecurring,
+      3, //uint _amountInitial,
+      0, //uint _periodType,
+      30, //uint _periodMultiplier,
+      current_timestamp + 10, //uint _startTime,
+      "" //string _data
+    );
+
+    const receipt = await tx.wait();
+    const event = findEvent(receipt, "NewSubscription");
+
+    // Check that the event was emitted
+    assert.notEqual(event, false);
+    // Subscription ID should be 66 characters long (32 bytes)
+    assert.lengthOf(event.args._subscriptionId, 66);
+  });
+
+  it("ERC948: Should pay amountInitial to secondAccount", async () => {
+    let balance_before = await erc20.balanceOf(owner);
+
+    const current_timestamp = Math.round(new Date().getTime() / 1000);
+    await erc948.createSubscription(
+      secondAccount, //address _payeeAddress,
+      erc20.address, //address _tokenAddress,
+      1, //uint _amountRecurring,
+      2, //uint _amountInitial,
+      0, //uint _periodType,
+      30, //uint _periodMultiplier,
+      current_timestamp + 10, //uint _startTime,
+      "" //string _data
+    );
+
+    let balance_after = await erc20.balanceOf(owner);
+    // Check that the owner's balance has decreased by 2
+    assert(balance_before.add(-2).eq(balance_after));
+  });
+
+  it("ERC948: Should return false when valid subscription has no due payment", async () => {
+    // subscription startTime is 10 seconds from now
+    const current_timestamp = Math.round(new Date().getTime() / 1000);
     const tx = await erc948.createSubscription(
       secondAccount, //address _payeeAddress,
       erc20.address, //address _tokenAddress,
@@ -67,7 +110,16 @@ describe("ERC948 contract", async function () {
     const receipt = await tx.wait();
     const event = findEvent(receipt, "NewSubscription");
 
-    // Check that the event was emitted
-    assert.notEqual(event, false);
+    const res = await erc948.paymentDue(event.args._subscriptionId);
+
+    assert.equal(res, false);
+  });
+
+  it("ERC948: Should revert if a subscriptionID does not exist", async () => {
+    const subscriptionId = ethers.utils.hexZeroPad(ethers.utils.hexlify(0), 32);
+
+    await expect(erc948.paymentDue(subscriptionId)).to.be.revertedWith(
+      "Not an active subscription"
+    );
   });
 });

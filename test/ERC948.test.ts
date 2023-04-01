@@ -2,11 +2,24 @@
 // Author: Ray Orole
 
 import { ethers } from "hardhat";
-import { expect } from "chai";
-import { ETPToken } from "../typechain-types";
+import { assert, expect } from "chai";
+import { ETPToken, RecurringPayments } from "../typechain-types";
+
+function findEvent(response: any, eventName: string) {
+  for (var i = 0; i < response.events.length; i++) {
+    var log = response.events[i];
+
+    if (log.event == eventName) {
+      // We found the event!
+      return log;
+    }
+  }
+  return false;
+}
 
 describe("ERC948 contract", async function () {
   let erc20: ETPToken;
+  let erc948: RecurringPayments;
   let owner: string;
   let secondAccount: string;
   let thirdAccount;
@@ -22,6 +35,10 @@ describe("ERC948 contract", async function () {
     // Deploy the ETPToken contract and assign the total supply of 1000 tokens to the owner
     const ERC20 = await ethers.getContractFactory("ETPToken");
     erc20 = await ERC20.deploy(1000);
+
+    // Deploy the ERC948 contract
+    const ERC948 = await ethers.getContractFactory("RecurringPayments");
+    erc948 = await ERC948.deploy();
   });
 
   it("ERC20: Should assign the total supply of tokens to the owner", async function () {
@@ -30,17 +47,13 @@ describe("ERC948 contract", async function () {
     expect(await erc20.totalSupply()).to.equal(ownerBalance);
   });
 
-  it("ERC948: Deployment should assign the total supply of tokens to the owner", async function () {
-    // Deploy the ERC948 contract
-    const ERC948 = await ethers.getContractFactory("RecurringPayments");
-    const erc948 = await ERC948.deploy();
-
+  it("ERC948: Should emit NewSubscription event when createSubscription is called", async function () {
     await erc20.approve(erc948.address, 100);
 
     // We must use a start time that is now or in the future
     let current_timestamp = Math.round(new Date().getTime() / 1000);
 
-    let response = await erc948.createSubscription(
+    const tx = await erc948.createSubscription(
       secondAccount, //address _payeeAddress,
       erc20.address, //address _tokenAddress,
       1, //uint _amountRecurring,
@@ -51,6 +64,10 @@ describe("ERC948 contract", async function () {
       "" //string _data
     );
 
-    console.log(response);
+    const receipt = await tx.wait();
+    const event = findEvent(receipt, "NewSubscription");
+
+    // Check that the event was emitted
+    assert.notEqual(event, false);
   });
 });

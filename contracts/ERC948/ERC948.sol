@@ -4,7 +4,7 @@ pragma solidity ^0.8.18;
 
 import "../ERC20/ETPToken.sol";
 
-contract ERC948 {
+contract RecurringPayments {
     enum PeriodType {
         Second,
         Day,

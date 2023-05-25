@@ -88,7 +88,6 @@ contract RecurringPayments {
             startTime: block.timestamp,
             data: _data,
             active: true,
-            // TODO support hour, day, week, month, year
             nextPaymentTime: block.timestamp + _periodMultiplier
         });
 

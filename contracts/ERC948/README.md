@@ -105,7 +105,13 @@ The `RecurringPayments` contract is designed to facilitate recurring payments us
    - If a payment is due, the payee can initiate the payment using the `processSubscription` function, transferring the specified amount from the subscriber to the payee.
 
 8. **Usage Recommendations and Limitations:**
+
    - The current version of the contract only supports recurring intervals of type "Second". Extending support for additional period types (e.g., day, week, month, year) would require modifications to the contract's logic.
    - It is essential to ensure that the `ETPToken.sol` contract used for the ERC20 token operations is correctly implemented and imported.
    - Developers should consider adding additional error handling, access control mechanisms, and security measures based on the specific use case and deployment requirements.
    - Before deploying the contract in a production environment, thorough testing and auditing are recommended to identify and address any potential vulnerabilities or issues.
+
+9. **References:**
+
+- [ERC-20](https://eips.ethereum.org/EIPS/eip-20)
+- [ERC-948](https://github.com/sb777/erc-948-draft/issues/1)

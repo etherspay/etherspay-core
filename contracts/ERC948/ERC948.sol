@@ -96,7 +96,12 @@ contract RecurringPayments {
             abi.encode(msg.sender, block.timestamp)
         );
         subscriptions[subscriptionId] = newSubscription;
-        // TODO check for existing subscriptionId
+
+        // check for existing subscriptionId
+        require(
+            (subscriptions[subscriptionId].owner == msg.sender),
+            "Subscription ID already exists"
+        );
 
         // Add subscription to subscriber
         subscribers_subscriptions[msg.sender].push(subscriptionId);
@@ -139,7 +144,8 @@ contract RecurringPayments {
         Subscription storage subscription = subscriptions[_subscriptionId];
         require(
             (subscription.payeeAddress == msg.sender) ||
-                (subscription.owner == msg.sender)
+                (subscription.owner == msg.sender),
+            "Not authorized to cancel subscription"
         );
 
         delete subscriptions[_subscriptionId];

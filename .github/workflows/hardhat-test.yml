@@ -1,4 +1,4 @@
-name: Hardhat Test
+name: Hardhat Test & Coverage
 
 on:
   push:
@@ -19,4 +19,11 @@ jobs:
         with:
           node-version: "16.x"
       - run: yarn install --frozen-lockfile
-      - run: yarn test
+      - name: Run tests with coverage
+        run: yarn hardhat coverage
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage.json
+          path: coverage.json

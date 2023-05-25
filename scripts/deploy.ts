@@ -7,7 +7,7 @@ async function main() {
 
   await erc948.deployed();
 
-  console.log("Greeter deployed to:", erc948.address);
+  console.log("ERC948 deployed to:", erc948.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

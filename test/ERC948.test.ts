@@ -34,7 +34,7 @@ describe("ERC948 contract", async function () {
   before(async function () {
     // Deploy the ETPToken contract and assign the total supply of 1000 tokens to the owner
     const ERC20 = await ethers.getContractFactory("ETPToken");
-    erc20 = await ERC20.deploy(1000);
+    erc20 = await ERC20.deploy();
 
     // Deploy the ERC948 contract
     const ERC948 = await ethers.getContractFactory("RecurringPayments");

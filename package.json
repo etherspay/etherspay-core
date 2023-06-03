@@ -10,7 +10,8 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "type": "hardhat typechain"
+    "type": "hardhat typechain",
+    "coverage": "hardhat coverage"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",

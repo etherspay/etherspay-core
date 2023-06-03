@@ -2,7 +2,7 @@
 // Author: Ray Orolé
 pragma solidity ^0.8.18;
 
-import "../ERC20/ETPToken.sol";
+import "../ERC20/TestToken.sol";
 
 contract RecurringPayments {
     enum PeriodType {
@@ -63,7 +63,7 @@ contract RecurringPayments {
         );
 
         // Check that owner has a balance of at least the initial and first recurring payment
-        ETPToken token = ETPToken(_tokenAddress);
+        TestToken token = TestToken(_tokenAddress);
         uint amountRequired = _amountInitial + _amountRecurring;
         require(
             (token.balanceOf(msg.sender) >= amountRequired),
@@ -88,7 +88,6 @@ contract RecurringPayments {
             startTime: block.timestamp,
             data: _data,
             active: true,
-            // TODO support hour, day, week, month, year
             nextPaymentTime: block.timestamp + _periodMultiplier
         });
 
@@ -97,7 +96,12 @@ contract RecurringPayments {
             abi.encode(msg.sender, block.timestamp)
         );
         subscriptions[subscriptionId] = newSubscription;
-        // TODO check for existing subscriptionId
+
+        // check for existing subscriptionId
+        require(
+            (subscriptions[subscriptionId].owner == msg.sender),
+            "Subscription ID already exists"
+        );
 
         // Add subscription to subscriber
         subscribers_subscriptions[msg.sender].push(subscriptionId);
@@ -140,7 +144,8 @@ contract RecurringPayments {
         Subscription storage subscription = subscriptions[_subscriptionId];
         require(
             (subscription.payeeAddress == msg.sender) ||
-                (subscription.owner == msg.sender)
+                (subscription.owner == msg.sender),
+            "Not authorized to cancel subscription"
         );
 
         delete subscriptions[_subscriptionId];
@@ -194,7 +199,7 @@ contract RecurringPayments {
             "A Payment is not due for this subscription"
         );
 
-        ETPToken token = ETPToken(subscription.tokenAddress);
+        TestToken token = TestToken(subscription.tokenAddress);
         token.transferFrom(
             subscription.owner,
             subscription.payeeAddress,

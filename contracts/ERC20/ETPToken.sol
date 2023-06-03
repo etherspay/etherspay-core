@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.9;
 
-// Disable next error line
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ETPToken is ERC20 {
-    constructor(uint256 initialSupply) ERC20("Etherspay", "ETP") {
-        _mint(msg.sender, initialSupply);
+/// @custom:security-contact support@etherspay.com
+contract ETPToken is ERC20, Ownable {
+    constructor() ERC20("Etherspay Token", "ETP") {
+        _mint(msg.sender, 1000 * 10 ** decimals());
     }
 }

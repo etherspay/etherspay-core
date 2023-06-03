@@ -9,12 +9,12 @@ const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {},
-    goerli: {
-      url: "https://goerli.infura.io/v3/4299b69d50b54f9fafc81f91c46869de",
-      accounts: {
-        mnemonic: process.env.MNEMONIC,
-      },
-    },
+    // goerli: {
+    //   url: "https://goerli.infura.io/v3/4299b69d50b54f9fafc81f91c46869de",
+    //   accounts: {
+    //     mnemonic: process.env.MNEMONIC,
+    //   },
+    // },
   },
 };
 

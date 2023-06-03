@@ -4,10 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-if (!process.env.MNEMONIC) {
-  throw new Error("Please set your MNEMONIC in a .env file");
-}
-
 const config: HardhatUserConfig = {
   solidity: "0.8.18",
   defaultNetwork: "hardhat",

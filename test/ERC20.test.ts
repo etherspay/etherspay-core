@@ -4,7 +4,6 @@
 import { ethers } from "hardhat";
 import { assert, expect } from "chai";
 import { ETPToken } from "../typechain-types";
-
 describe("ERC20 Token contract", async function () {
   let erc20: ETPToken;
   let owner: string;
@@ -32,22 +31,14 @@ describe("ERC20 Token contract", async function () {
 
   it("ERC20: Should transfer tokens between accounts", async function () {
     const initialBalance = await erc20.balanceOf(owner);
-    const transferAmount = 100;
+    const transferAmount = ethers.BigNumber.from(100);
     await erc20.transfer(secondAccount, transferAmount);
 
     const ownerBalance = await erc20.balanceOf(owner);
     const secondAccountBalance = await erc20.balanceOf(secondAccount);
 
-    assert.equal(
-      ownerBalance.toNumber(),
-      initialBalance.toNumber() - transferAmount,
-      "Owner balance should decrease"
-    );
-    assert.equal(
-      secondAccountBalance.toNumber(),
-      transferAmount,
-      "Second account balance should increase"
-    );
+    expect(ownerBalance).to.equal(initialBalance.sub(transferAmount));
+    expect(secondAccountBalance).to.equal(transferAmount);
   });
 
   //   it("ERC20: Should approve and transfer tokens using transferFrom", async function () {

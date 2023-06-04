@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @custom:security-contact support@etherspay.com
 contract ETPToken is ERC20, Ownable {
-    constructor() ERC20("Etherspay Token", "ETP") {
-        _mint(msg.sender, 1000 * 10 ** decimals());
+    constructor(uint64 amountOfTokens) ERC20("Etherspay Token", "ETP") {
+        _mint(msg.sender, amountOfTokens * 10 ** decimals());
     }
 }

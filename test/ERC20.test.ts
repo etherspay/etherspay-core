@@ -20,7 +20,7 @@ describe("ERC20 Token contract", async function () {
   before(async function () {
     // Deploy the ETPToken contract and assign the total supply of 1000 tokens to the owner
     const ERC20 = await ethers.getContractFactory("ETPToken");
-    erc20 = await ERC20.deploy();
+    erc20 = await ERC20.deploy(1000000);
   });
 
   it("ERC20: Should assign the total supply of tokens to the owner", async function () {
